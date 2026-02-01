@@ -1,0 +1,82 @@
+SAMPLE DISCOVERY CALL TRANSCRIPT
+=====================================
+Company: Burger Palace
+Date: 2026-02-01
+Attendees: Sarah (AE), Mike (Operations Director)
+
+=====================================
+
+Sarah: Thanks for taking the time to meet with me today, Mike. Can you start by telling me a bit about Burger Palace?
+
+Mike: Absolutely. We're a fast-casual burger chain with 23 locations across the Midwest. We've been growing quickly - opened 8 new locations in the past year - and that's actually creating some challenges for us.
+
+Sarah: That's exciting growth! What kind of challenges are you facing?
+
+Mike: Well, the biggest issue is reporting. We're using Lightspeed for our POS system, and honestly, the reporting is awful. I can't see all our sites in one place. Our finance team, which is just two people, spends literally the entire Monday and Tuesday each week pulling data from each location, copying it into Excel, and trying to compile everything. By the time we have our weekly report ready, it's Wednesday afternoon, and we're already planning for the next week.
+
+Sarah: So you're essentially managing your business with week-old data?
+
+Mike: Exactly. And that's not even the worst part. The Excel file has become this monster - it's 15MB, full of VLOOKUPs that break all the time, and if someone accidentally deletes a formula, our whole report is shot. Last month, we lost two days of work because someone made a mistake and we had to recreate everything from scratch.
+
+Sarah: That sounds incredibly frustrating. What other systems are you using besides Lightspeed?
+
+Mike: We're using Planday for labor scheduling, and we just started using Marketman for inventory management at our newer locations. But again, nothing talks to each other. I have to log into three different systems, export data from each one, and then try to make sense of it all.
+
+Sarah: How are you handling labor costs? That's usually a big focus for growing chains.
+
+Mike: Labor is killing us right now. We're running at about 32% labor cost, and our target is 28%. The problem is we don't have any good way to forecast demand. Our managers basically just look at last year's sales for the same week and try to schedule based on that. But we've had so much variability - weather impacts, local events, new competitors opening nearby - that last year's numbers aren't really helpful anymore.
+
+Sarah: Are you using any kind of forecasting tool?
+
+Mike: No, nothing. We looked at some options, but they all seem so complicated to set up. We're a scrappy team - we don't have a data science department or anything like that. We need something that just works without requiring a PhD in analytics.
+
+Sarah: I understand. What about your multi-location visibility? What specific challenges does that create?
+
+Mike: Oh man, where do I start? First, I can't compare locations easily. If one location is underperforming, I don't know about it until we do our weekly deep dive. Second, we have different areas - we have college town locations that behave completely differently from our suburban mall locations. But we can't group them or analyze them separately in Lightspeed. Everything is just a flat list of 23 locations.
+
+Sarah: How does that impact your decision-making?
+
+Mike: We're flying blind half the time. For example, we tested a new menu item last quarter. It did really well in our college locations but terribly in the suburbs. By the time we figured that out from our manual reports, we'd already rolled it out everywhere and wasted a bunch of money on marketing and training. If we had better reporting with location groups, we would have caught that much earlier.
+
+Sarah: What would ideal reporting look like for you?
+
+Mike: I want to open my laptop on Monday morning and see everything I need to know: sales by location, labor costs by location, how we're tracking against budget, alerts if anything is off. I want to be able to drill down into our college locations as a group, or our mall locations, or look at individual stores. And I want this to be real-time, or at least from yesterday, not from a week ago.
+
+Sarah: That makes a lot of sense. How about your team - who needs access to this data?
+
+Mike: That's another pain point. Right now, only our finance director and I see the full picture because we're the ones who can navigate the crazy Excel file. Our regional managers should be able to see their own regions, and our store managers should be able to see their own stores. But we can't give them access without either giving them the whole Excel file - which is way too much - or creating 20+ separate reports, which we don't have time to do.
+
+Sarah: So democratizing data access is important to you?
+
+Mike: Absolutely. I want our store managers to be empowered to make decisions. If they could just check an app on their phone and see how their day is going compared to target, they'd be able to make real-time adjustments. Right now, they're in the dark just like we are.
+
+Sarah: What about inventory? You mentioned Marketman - how's that going?
+
+Mike: It's okay for what it does, but the reporting is pretty basic. We can see our purchases, but we can't really connect that to our actual waste and theoretical usage across all locations. We're only using it at 8 of our 23 locations right now because it's a pain to roll out.
+
+Sarah: Are there any other systems you're considering or wish you had?
+
+Mike: Honestly, we've looked at going all-in on one of those big all-in-one platforms like Fourth. They pitched us on their labor, inventory, and analytics suite. The appeal is that it's all one system, but the reporting still looked pretty clunky, and we'd have to rip out Planday and Marketman, which our team is finally getting comfortable with.
+
+Sarah: So you'd prefer to keep your best-of-breed tools and have something that brings it all together?
+
+Mike: Exactly! We spent a year evaluating and implementing Planday. Our managers love it. I don't want to rip that out just to get better reporting. I want a reporting layer that sits on top of everything we already have.
+
+Sarah: That makes perfect sense. Before we wrap up, what's your biggest priority right now if you could wave a magic wand and fix one thing?
+
+Mike: Get rid of our Excel reporting nightmare. If I could see all 23 locations in one dashboard, grouped by our regions and concepts, with real-time data, that would be transformational. Everything else - forecasting, mobile access, alerts - that would be amazing, but first I just need to stop wasting my finance team's time on manual data compilation.
+
+Sarah: Got it. And what's your timeframe for making a decision on a solution?
+
+Mike: We're planning our Q2 budget next month, so ideally we'd like to have something in place by April. We've been putting this off for too long, and our growth is only making the problem worse.
+
+Sarah: Perfect. Based on what you've shared, I think Tenzo would be a great fit for Burger Palace. Let me put together a custom demo that shows you exactly how we'd solve these problems for your specific situation.
+
+Mike: That would be great. I'm excited to see what you come up with.
+
+Sarah: Excellent. I'll follow up with a proposed demo agenda in the next day or two. Thanks so much for your time, Mike!
+
+Mike: Thank you, Sarah. Looking forward to it.
+
+=====================================
+END OF TRANSCRIPT
