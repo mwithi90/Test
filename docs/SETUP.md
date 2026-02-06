@@ -30,24 +30,9 @@
    - `im:write` — Open DMs with users to send results
    - `app_mentions:read` — Respond when someone @mentions the bot
 
-### 1.3 Enable Interactivity (required for modals)
+### 1.3 Enable Socket Mode (do this FIRST)
 
-1. In the left sidebar, go to **Interactivity & Shortcuts**
-2. Toggle **Interactivity** to **On**
-3. For the Request URL, enter any placeholder for now (e.g. `https://placeholder.com`) — Socket Mode bypasses this, but the toggle must be on
-4. Click **Save Changes**
-
-### 1.4 Enable Event Subscriptions
-
-1. In the left sidebar, go to **Event Subscriptions**
-2. Toggle **Enable Events** to **On**
-3. Under **Subscribe to bot events**, click **Add Bot User Event** and add:
-   - `app_mention`
-4. Click **Save Changes**
-
-### 1.5 Enable Socket Mode
-
-Socket Mode lets the bot connect via WebSocket instead of requiring a public URL. This is the simplest deployment option.
+Socket Mode lets the bot connect via WebSocket instead of requiring a public URL. **You must enable this before steps 1.4 and 1.5** — once Socket Mode is on, Slack stops requiring a Request URL for Interactivity and Event Subscriptions.
 
 1. In the left sidebar, go to **Socket Mode**
 2. Toggle it **On**
@@ -56,6 +41,22 @@ Socket Mode lets the bot connect via WebSocket instead of requiring a public URL
    - Scope: `connections:write`
    - Click **Generate**
 4. **Copy this token** — it starts with `xapp-`. Save it as your `SLACK_APP_TOKEN`
+
+### 1.4 Enable Interactivity (required for modals)
+
+1. In the left sidebar, go to **Interactivity & Shortcuts**
+2. Toggle **Interactivity** to **On**
+3. You should NOT be asked for a Request URL since Socket Mode is already on. If you do see a URL field, it will show a note that Socket Mode is handling it — you can leave it blank.
+4. Click **Save Changes**
+
+### 1.5 Enable Event Subscriptions
+
+1. In the left sidebar, go to **Event Subscriptions**
+2. Toggle **Enable Events** to **On**
+3. Again, no Request URL is needed — Socket Mode handles event delivery
+4. Under **Subscribe to bot events**, click **Add Bot User Event** and add:
+   - `app_mention`
+5. Click **Save Changes**
 
 ### 1.6 Create the Slash Command
 
@@ -260,7 +261,7 @@ cp .env.example .env
 Edit `.env` and fill in every value you've collected:
 
 ```bash
-# Slack (from steps 1.5, 1.7, 1.8)
+# Slack (from steps 1.3, 1.7, 1.8)
 SLACK_BOT_TOKEN=xoxb-your-bot-token
 SLACK_SIGNING_SECRET=your-signing-secret
 SLACK_APP_TOKEN=xapp-your-app-token
@@ -379,13 +380,13 @@ For any of these, you'll need to:
 ### Slack Issues
 
 **Bot doesn't respond to `/tenzo-ref`:**
-- Check that Socket Mode is enabled (step 1.5)
+- Check that Socket Mode is enabled (step 1.3)
 - Verify `SLACK_APP_TOKEN` starts with `xapp-`
 - Verify the slash command was created (step 1.6)
 - Check the terminal for error messages
 
 **Modal doesn't open:**
-- Check that **Interactivity** is turned on (step 1.3)
+- Check that **Interactivity** is turned on (step 1.4)
 - Verify `SLACK_BOT_TOKEN` starts with `xoxb-`
 
 **No DM received after submitting:**
