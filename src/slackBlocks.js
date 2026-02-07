@@ -59,9 +59,11 @@ function buildInputModal() {
   };
 }
 
-// Build the results message that gets posted back to the rep
-function buildResultsMessage({ prospect, rankedCustomers, caseStudies, generateWhy }) {
+// Build the results message from the AI matcher output
+function buildResultsMessage({ prospect, matcherResult }) {
   const blocks = [];
+  const references = matcherResult.references || [];
+  const caseStudies = matcherResult.case_studies || [];
 
   // Header
   blocks.push({
@@ -72,7 +74,7 @@ function buildResultsMessage({ prospect, rankedCustomers, caseStudies, generateW
   // Prospect summary
   const prospectFields = [
     `*Lead:* ${prospect.lead_name}`,
-    `*Type:* ${prospect.restaurant_type || 'Unknown'}`,
+    `*Type:* ${capitalize(prospect.restaurant_type) || 'Unknown'}`,
     `*Geography:* ${[prospect.geography?.region, prospect.geography?.country].filter(Boolean).join(', ') || 'Unknown'}`,
     `*Locations:* ${prospect.estimated_locations || 'Unknown'}`,
     `*Integrations:* ${prospect.integrations?.join(', ') || 'None specified'}`,
@@ -98,37 +100,33 @@ function buildResultsMessage({ prospect, rankedCustomers, caseStudies, generateW
 
   blocks.push({ type: 'divider' });
 
-  // Ranked references
+  // Recommended references
   blocks.push({
     type: 'header',
     text: { type: 'plain_text', text: 'Recommended References' },
   });
 
-  if (rankedCustomers.length === 0) {
+  if (references.length === 0) {
     blocks.push({
       type: 'section',
       text: { type: 'mrkdwn', text: '_No strong matches found. Try broadening the integrations or check the reference sheet manually._' },
     });
   }
 
-  rankedCustomers.forEach((scored, i) => {
-    const c = scored.customer;
-    const why = generateWhy(scored);
-    const locationText = c.locations ? ` | ${c.locations} locations` : '';
-    const geoText = [c.region, c.country].filter(Boolean).join(', ');
+  references.forEach((ref, i) => {
+    const sharedText = ref.shared_integrations?.length > 0
+      ? `\n> :link: Shared stack: ${ref.shared_integrations.join(', ')}`
+      : '';
 
     blocks.push({
       type: 'section',
       text: {
         type: 'mrkdwn',
         text: [
-          `*${i + 1}. ${c.name}* — Score: ${scored.score}/100`,
-          `> ${capitalize(c.restaurantType) || 'Restaurant'} | ${geoText || 'Unknown'}${locationText}`,
-          scored.sharedIntegrations.length > 0
-            ? `> :link: Shared stack: ${scored.sharedIntegrations.join(', ')}`
-            : '',
-          `> :bulb: _${why}_`,
-          c.notes ? `> :memo: ${c.notes}` : '',
+          `*${i + 1}. ${ref.name}* — Score: ${ref.score}/100`,
+          `> ${ref.type || 'Restaurant'} | ${ref.geography || 'Unknown'}`,
+          sharedText,
+          `> :bulb: _${ref.why}_`,
         ].filter(Boolean).join('\n'),
       },
     });
@@ -143,12 +141,11 @@ function buildResultsMessage({ prospect, rankedCustomers, caseStudies, generateW
     });
 
     caseStudies.forEach((cs) => {
-      const matchReasons = cs.reasons?.join(', ') || 'General relevance';
       blocks.push({
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*<${cs.url}|${cs.customer}>* — ${cs.keyResult}\n> _Match: ${matchReasons}_`,
+          text: `*<${cs.url}|${cs.customer}>* — ${cs.key_result}\n> _${cs.why}_`,
         },
       });
     });

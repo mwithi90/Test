@@ -2,10 +2,9 @@ const { App } = require('@slack/bolt');
 const config = require('./config');
 const { buildInputModal, buildResultsMessage } = require('./slackBlocks');
 const { getIntegrationName } = require('./integrations');
-const { getCustomers } = require('./sheets');
+const { fetchSheetData, formatSheetForAI } = require('./sheets');
 const { researchProspect } = require('./research');
-const { rankCustomers, generateWhyExplanation } = require('./scoring');
-const { findMatchingCaseStudies } = require('./caseStudies');
+const { findReferences } = require('./matcher');
 
 const app = new App({
   token: config.slack.botToken,
@@ -54,7 +53,7 @@ app.view('tenzo_ref_submit', async ({ ack, body, view, client }) => {
   });
 
   try {
-    // Step 1: Research the prospect
+    // Step 1: Research the prospect (Claude + web search)
     const prospect = await researchProspect({
       companyName,
       leadName,
@@ -62,25 +61,19 @@ app.view('tenzo_ref_submit', async ({ ack, body, view, client }) => {
       salesforceUrl,
     });
 
-    // Ensure salesforce_url is on the prospect object for display
     if (salesforceUrl) {
       prospect.salesforce_url = salesforceUrl;
     }
 
-    // Step 2: Fetch customers from Google Sheet and rank them
-    const customers = await getCustomers();
-    const rankedCustomers = rankCustomers(customers, prospect);
+    // Step 2: Fetch customer data from Google Sheet
+    await fetchSheetData();
+    const sheetData = formatSheetForAI();
 
-    // Step 3: Find matching case studies
-    const caseStudies = findMatchingCaseStudies(prospect);
+    // Step 3: Use AI to find the best references + case studies
+    const matcherResult = await findReferences({ prospect, sheetData });
 
     // Step 4: Build and send results
-    const blocks = buildResultsMessage({
-      prospect,
-      rankedCustomers,
-      caseStudies,
-      generateWhy: generateWhyExplanation,
-    });
+    const blocks = buildResultsMessage({ prospect, matcherResult });
 
     await client.chat.update({
       channel: dm.channel.id,

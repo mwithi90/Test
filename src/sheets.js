@@ -13,6 +13,7 @@ async function getAuthClient() {
   return auth.getClient();
 }
 
+// Fetch raw sheet data - returns headers and rows as-is from the sheet
 async function fetchSheetData() {
   const now = Date.now();
   if (cachedData && now - cacheTimestamp < CACHE_TTL_MS) {
@@ -33,7 +34,10 @@ async function fetchSheetData() {
   }
 
   const headers = rows[0];
-  const customers = rows.slice(1).map((row) => {
+  const dataRows = rows.slice(1);
+
+  // Build array of objects keyed by header name
+  const customers = dataRows.map((row) => {
     const record = {};
     headers.forEach((header, i) => {
       record[header.trim()] = (row[i] || '').trim();
@@ -41,45 +45,30 @@ async function fetchSheetData() {
     return record;
   });
 
+  // Log headers on first fetch so we can see what columns exist
+  console.log(`Sheet loaded: ${customers.length} rows, columns: ${headers.join(' | ')}`);
+
   cachedData = { headers, customers };
   cacheTimestamp = now;
   return cachedData;
 }
 
-// Parse a customer record into a normalized structure using the configured column mapping
-function normalizeCustomer(record) {
-  const cols = config.sheetColumns;
+// Format sheet data as a compact text block for Claude to analyze
+function formatSheetForAI() {
+  if (!cachedData) return '';
 
-  // Collect all integrations from separate columns into one array
-  const integrations = [];
-  const posVal = record[cols.pos];
-  const labourVal = record[cols.labour];
-  const inventoryVal = record[cols.inventory];
-  const otherVal = record[cols.otherIntegrations];
+  const { headers, customers } = cachedData;
 
-  if (posVal) integrations.push(...posVal.split(/[,;]+/).map((s) => s.trim()).filter(Boolean));
-  if (labourVal) integrations.push(...labourVal.split(/[,;]+/).map((s) => s.trim()).filter(Boolean));
-  if (inventoryVal) integrations.push(...inventoryVal.split(/[,;]+/).map((s) => s.trim()).filter(Boolean));
-  if (otherVal) integrations.push(...otherVal.split(/[,;]+/).map((s) => s.trim()).filter(Boolean));
+  // Build a compact CSV-like representation
+  let text = headers.join(' | ') + '\n';
+  text += '-'.repeat(80) + '\n';
 
-  return {
-    name: record[cols.customerName] || 'Unknown',
-    restaurantType: (record[cols.restaurantType] || '').toLowerCase(),
-    country: (record[cols.country] || '').toLowerCase(),
-    region: (record[cols.region] || '').toLowerCase(),
-    locations: parseInt(record[cols.locations], 10) || 0,
-    integrations: integrations.map((i) => i.toLowerCase()),
-    integrationsRaw: integrations,
-    prestigeTier: parseInt(record[cols.prestigeTier], 10) || 3,
-    referenceable: (record[cols.referenceable] || 'yes').toLowerCase() === 'yes',
-    notes: record[cols.notes] || '',
-    _raw: record,
-  };
+  for (const customer of customers) {
+    const values = headers.map((h) => customer[h.trim()] || '');
+    text += values.join(' | ') + '\n';
+  }
+
+  return text;
 }
 
-async function getCustomers() {
-  const { customers } = await fetchSheetData();
-  return customers.map(normalizeCustomer).filter((c) => c.referenceable);
-}
-
-module.exports = { fetchSheetData, getCustomers, normalizeCustomer };
+module.exports = { fetchSheetData, formatSheetForAI };
